@@ -181,6 +181,10 @@ binary_sensor:
     #   name: Radar Moving Target
     # has_still_target:
     #   name: Radar Still Target
+  - platform: gpio
+    pin: D6
+    name: gpio out pin presence
+    device_class: presence
 
 sensor:
   - platform: ld2410
