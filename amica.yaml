@@ -6,12 +6,50 @@ esp8266:
 
 # Enable logging
 logger:
- baud_rate: 0
+    # baud_rate: 115200 # 460800 #256000
+    baud_rate: 0 # no logging to serial
+    # level : VERY_VERBOSE
+
+external_components:
+  - source: github://dentra/esphome-components
+
+crash_info:
+  id: crash_info_obj
+  # Optional, uint32. The number of stack frames to be saved.
+  max_stack_frames_size: 10
+  # Optional, uint32. Minimum address of stack frame to be saved. Default: 0x40000000.
+  min_stack_frames_addr: 0x40000000
+  # Optional, uint32. Maximum address of stack frame to be saved. Default: 0x50000000.
+  max_stack_frames_addr: 0x50000000
+  # Optional, binary_sensor. Crash indicator.
+  indicator:
+    name: $name Crash state
+  # Optional, boolean. Store backtrace in FLASH or RTC. Default: false.
+  store_in_flash: false
+  # Optional, uint. Break line after this number of frames. Default: 4
+  frames_in_line: 4
+
+# Add button to reset state of crash.
+button:
+  - platform: template
+    name: $name Reset crash state
+    on_press:
+      lambda: id(crash_info_obj).reset();
+
+
+debug:
+  update_interval: 5s
+
 # Enable Home Assistant API
 api:
+  encryption:
+    key: !secret ha_api_amica
+
+time:
+  - platform: homeassistant
 
 ota:
-  password: "4c399ced63aaff9326d7a9c3326897b4"
+  password: !secret ota_password_amica
 
 # required for fall back
 captive_portal:
@@ -24,7 +62,7 @@ wifi:
   ap:
     ssid: "Amica Fallback Hotspot"
     password: "B2AekQ07EtRr"
-    
+
   manual_ip:
     # Set this to the IP of the ESP
     static_ip: 192.168.2.127
@@ -34,221 +72,239 @@ wifi:
     subnet: 255.255.255.0
 
 uart:
-  tx_pin: TX
-  rx_pin: RX
-  baud_rate: 256000
-  parity: NONE
-  stop_bits: 1
+  - rx_pin: RX
+    tx_pin: TX
+    baud_rate: 256000
+    parity: NONE
+    stop_bits: 1
+    id: uart_studeer
+#   - rx_pin: D8
+#     tx_pin: D7
+#     baud_rate: 256000
+#     parity: NONE
+#     stop_bits: 1
+#     id: uart_studeer #thijs
 
 ld2410:
-  id: ld2410_studeer
+  - id: ld2410_studeer
+    uart_id: uart_studeer
+#   - id: ld2410_thijs
+#     uart_id: uart_thijs
 
 text_sensor:
+  - platform: debug
+    device:
+      name: "Device Info"
+    reset_reason:
+      name: "Reset Reason"
   - platform: ld2410
+    ld2410_id : ld2410_studeer
     version:
-      name: "firmware version"
+      name: "firmware version studeer"
+#   - platform: ld2410
+#     ld2410_id : ld2410_thijs
+#     version:
+#       name: "firmware version thijs"
 
-switch:
-  - platform: ld2410
-    # engineering_mode:
-    #   name: "engineering mode"
-    bluetooth:
-      name: "control bluetooth"
+# switch:
+#   - platform: ld2410
+#     # engineering_mode:
+#     #   name: "engineering mode"
+#     bluetooth:
+#       name: "control bluetooth"
 
-number:
-  - platform: ld2410
-    # timeout:
-    #   name: Radar Timeout
-    # max_move_distance_gate:
-    #   name: Radar Max Move Distance
-    # max_still_distance_gate:
-    #   name: Radar Max Still Distance
-    g0:
-      move_threshold:
-        name: g0 move threshold
-      still_threshold:
-        name: g0 still threshold
-    g1:
-      move_threshold:
-        name: g1 move threshold
-      still_threshold:
-        name: g1 still threshold
-    g2:
-      move_threshold:
-        name: g2 move threshold
-      still_threshold:
-        name: g2 still threshold
-    g3:
-      move_threshold:
-        name: g3 move threshold
-      still_threshold:
-        name: g3 still threshold
-    g4:
-      move_threshold:
-        name: g4 move threshold
-      still_threshold:
-        name: g4 still threshold
-    g5:
-      move_threshold:
-        name: g5 move threshold
-      still_threshold:
-        name: g5 still threshold
-    g6:
-      move_threshold:
-        name: g6 move threshold
-      still_threshold:
-        name: g6 still threshold
-    g7:
-      move_threshold:
-        name: g7 move threshold
-      still_threshold:
-        name: g7 still threshold
-    g8:
-      move_threshold:
-        name: g8 move threshold
-      still_threshold:
-        name: g8 still threshold
-  # Setting ending of zone 1 occupancy
-  # - platform: template
-  #   name: "Radar End Zone 1"
-  #   id: radar_z1_end
-  #   device_class: distance
-  #   min_value: 0
-  #   max_value: 600
-  #   step: 1
-  #   mode: box
-  #   update_interval: never
-  #   optimistic: true
-  #   restore_value: true
-  #   initial_value: 250
-  #   icon: "mdi:arrow-collapse-right"
-  #   entity_category: CONFIG
-  # # Setting ending of zone 2 occupancy
-  # - platform: template
-  #   name: "Radar End Zone 2"
-  #   id: radar_z2_end
-  #   device_class: distance
-  #   min_value: 0
-  #   max_value: 600
-  #   step: 1
-  #   mode: box
-  #   update_interval: never
-  #   optimistic: true
-  #   restore_value: true
-  #   initial_value: 600
-  #   icon: "mdi:arrow-collapse-right"
-  #   entity_category: CONFIG
-  # Setting ending of zone 3 occupancy
-  # - platform: template
-  #   name: "Radar End Zone 3"
-  #   id: radar_z3_end
-  #   device_class: distance
-  #   min_value: 0
-  #   max_value: 600
-  #   step: 1
-  #   mode: box
-  #   update_interval: never
-  #   optimistic: true
-  #   restore_value: true
-  #   initial_value: 100
-  #   icon: "mdi:arrow-collapse-right"
-  #   entity_category: CONFIG
+# number:
+#   - platform: ld2410
+#     # timeout:
+#     #   name: Radar Timeout
+#     # max_move_distance_gate:
+#     #   name: Radar Max Move Distance
+#     # max_still_distance_gate:
+#     #   name: Radar Max Still Distance
+#     g0:
+#       move_threshold:
+#         name: g0 move threshold
+#       still_threshold:
+#         name: g0 still threshold
+#     g1:
+#       move_threshold:
+#         name: g1 move threshold
+#       still_threshold:
+#         name: g1 still threshold
+#     g2:
+#       move_threshold:
+#         name: g2 move threshold
+#       still_threshold:
+#         name: g2 still threshold
+#     g3:
+#       move_threshold:
+#         name: g3 move threshold
+#       still_threshold:
+#         name: g3 still threshold
+#     g4:
+#       move_threshold:
+#         name: g4 move threshold
+#       still_threshold:
+#         name: g4 still threshold
+#     g5:
+#       move_threshold:
+#         name: g5 move threshold
+#       still_threshold:
+#         name: g5 still threshold
+#     g6:
+#       move_threshold:
+#         name: g6 move threshold
+#       still_threshold:
+#         name: g6 still threshold
+#     g7:
+#       move_threshold:
+#         name: g7 move threshold
+#       still_threshold:
+#         name: g7 still threshold
+#     g8:
+#       move_threshold:
+#         name: g8 move threshold
+#       still_threshold:
+#         name: g8 still threshold
+#   # Setting ending of zone 1 occupancy
+#   # - platform: template
+#   #   name: "Radar End Zone 1"
+#   #   id: radar_z1_end
+#   #   device_class: distance
+#   #   min_value: 0
+#   #   max_value: 600
+#   #   step: 1
+#   #   mode: box
+#   #   update_interval: never
+#   #   optimistic: true
+#   #   restore_value: true
+#   #   initial_value: 250
+#   #   icon: "mdi:arrow-collapse-right"
+#   #   entity_category: CONFIG
+#   # # Setting ending of zone 2 occupancy
+#   # - platform: template
+#   #   name: "Radar End Zone 2"
+#   #   id: radar_z2_end
+#   #   device_class: distance
+#   #   min_value: 0
+#   #   max_value: 600
+#   #   step: 1
+#   #   mode: box
+#   #   update_interval: never
+#   #   optimistic: true
+#   #   restore_value: true
+#   #   initial_value: 600
+#   #   icon: "mdi:arrow-collapse-right"
+#   #   entity_category: CONFIG
+#   # Setting ending of zone 3 occupancy
+#   # - platform: template
+#   #   name: "Radar End Zone 3"
+#   #   id: radar_z3_end
+#   #   device_class: distance
+#   #   min_value: 0
+#   #   max_value: 600
+#   #   step: 1
+#   #   mode: box
+#   #   update_interval: never
+#   #   optimistic: true
+#   #   restore_value: true
+#   #   initial_value: 100
+#   #   icon: "mdi:arrow-collapse-right"
+#   #   entity_category: CONFIG
 
 
-#Occupancy sensor
-binary_sensor:
-  - platform: ld2410
-    has_target:
-      # name: Radar Target 
-      name: Motion studeerkamer ld2410
-      id: radar_has_target
-    # has_moving_target:
-    #   name: Radar Moving Target
-    # has_still_target:
-    #   name: Radar Still Target
-  
-sensor:
-  - platform: ld2410
-    moving_distance:
-      name: Radar Moving Distance
-      id: moving_distance
-    still_distance:
-      name: Radar Still Distance
-      id: still_distance
-    moving_energy:
-      name: Radar Move Energy
-    still_energy:
-      name: Radar Still Energy
-    detection_distance:
-      name: Radar Detection Distance
-      id: radar_detection_distance
-    # g0:
-    #   move_energy:
-    #     name: g0 move energy
-    #   still_energy:
-    #     name: g0 still energy
-    # g1:
-    #   move_energy:
-    #     name: g1 move energy
-    #   still_energy:
-    #     name: g1 still energy
-    g2:
-      move_energy:
-        name: g2 move energy
-        id: g2_move_energy
-      still_energy:
-        name: g2 still energy
-        id: g2_still_energy
-    g3:
-      move_energy:
-        name: g3 move energy
-      still_energy:
-        name: g3 still energy
-    g4:
-      move_energy:
-        name: g4 move energy
-      still_energy:
-        name: g4 still energy
-    g5:
-      move_energy:
-        name: g5 move energy
-        id: g5_move_energy
-      still_energy:
-        name: g5 still energy
-        id: g5_still_energy
-    g6:
-      move_energy:
-        name: g6 move energy
-        id: g6_move_energy
-      still_energy:
-        name: g6 still energy
-        id: g6_still_energy
-    g7:
-      move_energy:
-        name: g7 move energy
-      still_energy:
-        name: g7 still energy
-    g8:
-      move_energy:
-        name: g8 move energy
-      still_energy:
-        name: g8 still energy
+# #Occupancy sensor
+# binary_sensor:
+#   - platform: ld2410
+#     has_target:
+#       # name: Radar Target
+#       name: Motion studeerkamer ld2410
+#       id: radar_has_target
+#     # has_moving_target:
+#     #   name: Radar Moving Target
+#     # has_still_target:
+#     #   name: Radar Still Target
 
 # sensor:
-#   - platform: htu21d
-#     temperature:
-#       name: "Kruipruimte Temperature"
-#     humidity:
-#       name: "Kruipruimte Humidity"
-#     update_interval: 10min
-    
-# i2c:
-#   sda: D1
-#   scl: D2
-#   scan: true
-#   id: bus_a
+#   - platform: ld2410
+#     moving_distance:
+#       name: Radar Moving Distance
+#       id: moving_distance
+#     still_distance:
+#       name: Radar Still Distance
+#       id: still_distance
+#     moving_energy:
+#       name: Radar Move Energy
+#     still_energy:
+#       name: Radar Still Energy
+#     detection_distance:
+#       name: Radar Detection Distance
+#       id: radar_detection_distance
+#     # g0:
+#     #   move_energy:
+#     #     name: g0 move energy
+#     #   still_energy:
+#     #     name: g0 still energy
+#     # g1:
+#     #   move_energy:
+#     #     name: g1 move energy
+#     #   still_energy:
+#     #     name: g1 still energy
+#     g2:
+#       move_energy:
+#         name: g2 move energy
+#         id: g2_move_energy
+#       still_energy:
+#         name: g2 still energy
+#         id: g2_still_energy
+#     g3:
+#       move_energy:
+#         name: g3 move energy
+#       still_energy:
+#         name: g3 still energy
+#     g4:
+#       move_energy:
+#         name: g4 move energy
+#       still_energy:
+#         name: g4 still energy
+#     g5:
+#       move_energy:
+#         name: g5 move energy
+#         id: g5_move_energy
+#       still_energy:
+#         name: g5 still energy
+#         id: g5_still_energy
+#     g6:
+#       move_energy:
+#         name: g6 move energy
+#         id: g6_move_energy
+#       still_energy:
+#         name: g6 still energy
+#         id: g6_still_energy
+#     g7:
+#       move_energy:
+#         name: g7 move energy
+#       still_energy:
+#         name: g7 still energy
+#     g8:
+#       move_energy:
+#         name: g8 move energy
+#       still_energy:
+#         name: g8 still energy
 
-time:
-  - platform: homeassistant
+# # sensor:
+# #   - platform: htu21d
+# #     temperature:
+# #       name: "Kruipruimte Temperature"
+# #     humidity:
+# #       name: "Kruipruimte Humidity"
+# #     update_interval: 10min
+
+# # i2c:
+# #   sda: D1
+# #   scl: D2
+# #   scan: true
+# #   id: bus_a
+
 
 
