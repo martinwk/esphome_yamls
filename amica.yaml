@@ -58,10 +58,6 @@ text_sensor:
     ld2410_id : ld2410_studeer
     version:
       name: "firmware version studeer"
-#   - platform: ld2410
-#     ld2410_id : ld2410_thijs
-#     version:
-#       name: "firmware version thijs"
 
 switch:
   - platform: ld2410
@@ -183,7 +179,7 @@ binary_sensor:
     #   name: Radar Still Target
   - platform: gpio
     pin: D6
-    name: gpio out pin presence
+    name: LD2410_D6
     device_class: presence
 
 sensor:
