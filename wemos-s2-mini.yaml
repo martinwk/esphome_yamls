@@ -3,13 +3,14 @@ esphome:
   comment: LD2410 presence detection radar
   friendly_name: Wemos s2 mini with LD2410
   name_add_mac_suffix: True
-  platformio_options:
-    board_build.flash_mode: dio
-    board_build.extra_flags:
-      - "-DARDUINO_USB_CDC_ON_BOOT=0"
+# only needed when flashing via USB (I guess)
+#   platformio_options:
+#     board_build.flash_mode: dio
+#     board_build.extra_flags:
+#       - "-DARDUINO_USB_CDC_ON_BOOT=0"
 
 esp32:
-  board: lolin_s2_mini  
+  board: lolin_s2_mini
 
 improv_serial:
 
@@ -173,7 +174,7 @@ number:
 binary_sensor:
   - platform: ld2410
     has_target:
-      # name: Radar Target 
+      # name: Radar Target
       name: Presence wc ld2410
       id: radar_has_target
     # has_moving_target:
