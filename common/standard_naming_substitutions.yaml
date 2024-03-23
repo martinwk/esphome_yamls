@@ -1,0 +1,16 @@
+    # naming of entities and devices is not going well in
+    # HA based on these. System name should be used for the
+    # entitiy in ha (sensor.system_name) but the friendly name
+    # is always prepended. This yields sensor.friendly_name_system_name
+    # So you could go for an empty friendly_name, but the proble is,
+    # is that the friendlyname is used in the templates by HA. So,
+    # an empty friendly_name is not advisable. What happens if I use empty
+    # system_name? no does not work, device_name can't be empty
+    # links:
+    #  - https://github.com/esphome/issues/issues/4848
+    #  - https://github.com/esphome/feature-requests/issues/2476#issuecomment-1844034117
+    system_name: "esph-${location}" #name-of-device-preferably-location
+    # system_name: "esph-${location}" #name-of-device-preferably-location
+    friendly_name: "${location}" #name-of-device-preferably-location
+    # friendly_name: ${sensors} # <usually CAML case version of the hostname i.e Living Room>
+    device_description: "${esp_board_name} in ${location} has ${sensors}"

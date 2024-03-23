@@ -1,13 +1,12 @@
 # TODO: Improve abstraction yamls even further using these schema: https://github.com/jcallaghan/esphome-config
 <<: !include wemos-s2-mini/wemos-s2-mini.yaml
 substitutions:
-  esp_boardname: wemos-s2-mini
+  esp_board_name: wemos-s2-mini
   location: studeerkamer
-  system_name: "esphome-${location}" #name_of_device_preferably_location
-  friendly_name: ${location} # <usually CAML case version of the hostname i.e Living Room>
-  device_description: "${esp_boardname} in ${location}"
+  sensors: "LD2410"
   static_ip: 192.168.2.133
   LD2410_pin: "16"
+  <<: !include common/standard_naming_substitutions.yaml
 
 api:
   encryption:

@@ -1,11 +1,13 @@
 substitutions:
-  esp_boardname: name-and-type-of-the-board
+  esp_board_name: name-and-type-of-the-board
   location: location-of-the-sensor-in-the-house
-  system_name: "esphome-${location}" #name-of-device-preferably-location
-  friendly_name: ${location} # <usually CAML case version of the hostname i.e Living Room>
-  device_description: "${esp-boardname} in ${location}"
   static_ip: 192.168.2.1
   LD2410_pin: "16"
+
+  <<: !include ../common/standard_naming_substitutions.yaml
+#   system_name: "esph-${location}" #name-of-device-preferably-location
+#   friendly_name: ${sensors} # <usually CAML case version of the hostname i.e Living Room>
+#   device_description: "${esp-boardname} in ${location} has ${sensors}"
 
 esphome:
   name: ${system_name}
@@ -50,7 +52,7 @@ wifi:
 
   power_save_mode: NONE
   ap:
-    ssid: ${system_name}
+    ssid: ${friendly_name} #${system_name}
     password: !secret wifi_password
 
 captive_portal:
@@ -62,7 +64,7 @@ web_server:
 sensor:
   - platform: template
     id: sys_esp_temperature
-    name: "${friendly_name} ESP Temperature (esphome)"
+    name: "${friendly_name} Temperature (esphome)"
     lambda: return temperatureRead();
     unit_of_measurement: °C
     device_class: TEMPERATURE
