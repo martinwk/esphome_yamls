@@ -1,12 +1,16 @@
+substitutions:
+  esp_board_name: firebeetle
+  location: woonkamer
+  static_ip: 192.168.2.121
+  LD2410_pin: "GPIO27"
+  sensors: "LD2410; Senseair"
+
+  <<: !include common/standard_naming_substitutions.yaml
+
 esphome:
-  name: firebeetle-humidity
-  includes:
-    - BleDistance/lib/OneEuro.h
-    - BleDistance/ble_dist.h
-  on_boot:
-    then:
-      lambda: |-
-        addTracker("phone", "d712bd8b-7830-4ad9-92d4-ea8e30719526");
+  name: ${system_name}
+  comment: "${device_description}"
+  friendly_name: ${friendly_name}
 
 uart:
   rx_pin: RX
@@ -17,11 +21,11 @@ esp32:
   board: firebeetle32
   framework:
     type: arduino
-        
+
 # Enable logging
 logger:
   level: warn
-  baud_rate: 0  # no logging to uart 
+  baud_rate: 0  # no logging to uart
 
 # Enable Home Assistant API
 api:
@@ -34,28 +38,34 @@ esp32_ble_tracker:
   scan_parameters:
     duration: 60s
     active: false
-  on_ble_advertise:
-    then:
-      - lambda: |-
-          parseAdvertisement(x);
-          
+
 wifi:
   ssid: !secret wifi_ssid
   password: !secret wifi_password
 
   # Enable fallback hotspot (captive portal) in case wifi connection fails
   ap:
-    ssid: "Firebeetle-Humidity"
+    ssid: "Firebeetle"
     password: "TzZW1Z3JC0cW"
-  # manual_ip:
-  #   # Set this to the IP of the ESP. router should not lease IP's above 150
-  #   static_ip: 192.168.2.121
-  #   # Set this to the IP address of the router. Often ends with .1
-  #   gateway: 192.168.2.254
-  #   # The subnet of the network. 255.255.255.0 works for most home networks.
-  #   subnet: 255.255.255.0
+
+  manual_ip:
+    # Set this to the IP of the ESP
+    static_ip: ${static_ip}
+    # Set this to the IP address of the router. Often ends with .1
+    gateway: 192.168.2.254
+    # The subnet of the network. 255.255.255.0 works for most home networks.
+    subnet: 255.255.255.0
+
 
 captive_portal:
+
+#Occupancy sensor
+binary_sensor:
+  - <<: !include common/ld2410_binary_sensor.yaml
+#   - platform: gpio
+#     pin: ${LD2410_pin}
+#     name: "${friendly_name} LD2410 presence (esphome)"
+#     device_class: presence
 
 sensor:
   - platform: senseair
@@ -63,18 +73,6 @@ sensor:
       name: "SenseAir CO2 Value"
     update_interval: 60s
 
-  # - platform: template
-  #   name: "Phone Distance"
-  #   id: phone_dist
-  #   update_interval: 30s
-  #   unit_of_measurement: "m"
-  #   device_class: ""
-  #   state_class: "measurement"
-  #   accuracy_decimals: 2
-  #   entity_category: "diagnostic"
-  #   lambda: |-
-  #     return getTracker("phone").get_dist();
-      
   - platform: uptime
     name: "Firebeetle uptime Sensor"
 
@@ -148,6 +146,7 @@ sensor:
       name: "Mi Humidity 8"
     battery_level:
       name: "Mi Battery Level 8"
+
 #   - platform: dht
 #     pin: 25
 #     temperature:
@@ -155,124 +154,6 @@ sensor:
 #     humidity:
 #       name: "Living Room Humidity"
 #     update_interval: 1s
-  # - platform: adc
-  #   pin: A0
-  #   name: "Multisensor Brightness"
-  #   unit_of_measurement: lux
-  #   filters:
-  #     - lambda: |-
-  #         return (x / 10000.0) * 2000000.0;
-  #   update_interval: 1s
-
-  # - platform: adc
-  #   pin: A0
-  #   name: "Gas ADC"
-  #   update_interval: 1s
-  #   filters:
-  #     - multiply: 3.3 # for NodeMcu ESP8266 v3 Lua
-  #   accuracy_decimals: 4
-  #   unit_of_measurement: V
-  #   id: sensor_volt  
-    
-  # - platform: template
-  #   #Linearization of the temperature dependency curve under and above 20 degree C
-  #   #below 20degC: fact = a * t * t - b * t - (h - 33) * d
-  #   #above 20degC: fact = a * t + b * h + c
-  #   #this assumes a linear dependency on humidity
-  #   #getCorrectionFactor
-  #   name: "Correction Factor"
-  #   lambda: |-
-  #     if (id(mi_6_temperature).state<20) {
-  #       return (id(CORA) * id(mi_6_temperature).state * id(mi_6_temperature).state - id(CORB) *
-  #         id(mi_6_temperature).state + id(CORC) - (id(mi_6_humidity).state - 33.) * id(CORD));
-  #     } else {
-  #       return (id(CORE) * id(mi_6_temperature).state + id(CORF) * id(mi_6_humidity).state + id(CORG));
-  #     }
-  #   update_interval: 10s
-  #   accuracy_decimals: 6
-  #   id: correction_factor
-
-  # - platform: template
-  #   #Get the resistance of the sensor, ie. the measurement value @return The sensor resistance in kOhm
-  #   # RS = [(VC x RL) / VRL] - RL
-  #   # RS_air = ((5.14*1.0)/sensor_volt)-1.0 Calculate RS in fresh air 
-  #   #getResistance
-  #   name: "Resistance"
-  #   lambda: |-
-  #     return ((id(volt_resolution)*id(RLOAD)/id(sensor_volt).state) - id(RLOAD));
-  #   update_interval: 5s
-  #   accuracy_decimals: 3
-  #   unit_of_measurement: kOm
-  #   id: resistance
-    
-  # - platform: template
-  #   # Get the resistance of the sensor, ie. the measurement value correctedfor temp/hum @return The corrected sensor resistance kOhm
-  #   #getCorrectedResistance
-  #   name: "Corrected Resistance"
-  #   lambda: |-
-  #     return (id(resistance).state / id(correction_factor).state);
-  #   update_interval: 5s
-  #   accuracy_decimals: 3
-  #   unit_of_measurement: kOm
-  #   id: corrected_resistance
-
-  # - platform: template
-  #   # Get the ppm of CO2 sensed (assuming only CO2 in the air). The ppm of CO2 in the air
-  #   #getPPM
-  #   name: "PPM CO2"
-  #   lambda: |-
-  #     if (id(regression_method)==1) {
-  #       return (id(PARA) * pow((id(resistance).state / id(RZERO)), id(PARB)));
-  #     } else {
-  #       return (pow(10, (log10(id(resistance).state / id(RZERO)) - id(PARB)) / id(PARA)));
-  #     }
-  #   update_interval: 5s
-  #   unit_of_measurement: ppm
-  #   id: ppm_co2
-
-  # - platform: template
-  #   # Get the ppm of CO2 sensed (assuming only CO2 in the air), corrected  for temp. The ppm of CO2 in the air
-  #   #getCorrectedPPM
-  #   name: "Corrected PPM CO2"
-  #   lambda: |-
-  #     if (id(regression_method)==1) {
-  #       return (id(PARA) * pow((id(corrected_resistance).state / id(RZERO)), id(PARB)));
-  #     } else {
-  #       return (pow(10, (log10(id(corrected_resistance).state / id(RZERO)) - id(PARB)) / id(PARA)));
-  #     }
-  #   update_interval: 5s
-  #   unit_of_measurement: ppm
-  #   id: corrected_ppm_co2
-
-  # - platform: template
-  #   # Get the resistance RZero of the sensor for calibration purposes. The sensor resistance RZero in kOhm
-  #   #getRZero
-  #   name: "RZero"
-  #   lambda: |-
-  #     return (id(resistance).state / pow((id(ATMOCO2) / id(PARA)), (1./id(PARB))));
-  #   filters:
-  #     - sliding_window_moving_average:
-  #         window_size: 15
-  #         send_every: 1
-  #   update_interval: 5s
-  #   accuracy_decimals: 3
-  #   unit_of_measurement: kOm
-  #   id: r_zero
-
-  # - platform: template
-  #   # Get the corrected resistance RZero of the sensor for calibration purposes. The corrected sensor resistance RZERO in kOhm for ATMOCO2 level
-  #   #getCorrectedRZero
-  #   name: "CorrectedRZero"
-  #   lambda: |-
-  #     return (id(corrected_resistance).state / pow((id(ATMOCO2) / id(PARA)), (1./id(PARB))));
-  #   filters:
-  #     - sliding_window_moving_average:
-  #         window_size: 15
-  #         send_every: 1
-  #   update_interval: 5s
-  #   accuracy_decimals: 3
-  #   unit_of_measurement: kOm
-  #   id: corrected_r_zero
 
 time:
   - platform: homeassistant
@@ -287,95 +168,3 @@ switch:
   - platform: restart
     name: "test_temperature Restart"
     id: restart_switch
-
-
-
-
-  
-# binary_sensor:
-#   - platform: gpio
-#     pin: 26
-#     name: "Multisensor Motion"
-#     device_class: motion
-
-# globals:
-
-# #The load resistance on the board. Value in KiloOhms
-#   - id: RLOAD
-#     type: float
-#     restore_value: no
-#     initial_value: '1.025'
-
-# #Calibration resistance at atmospheric CO2 level. Outdoor calibration data
-#   - id: RZERO
-#     type: float
-#     restore_value: no
-#     initial_value: '35.429'
-
-# #Atmospheric CO2 level for calibration purposes. Outdoor CO2 level during calibration. Usually 450, but it's better to clarify.
-#   - id: ATMOCO2
-#     type: float
-#     restore_value: no
-#     initial_value: '450'
-
-# #Parameters for calculating ppm of CO2 from sensor resistance
-# #  Exponential regression:
-# #  GAS      | a      | b
-# #  CO       | 605.18 | -3.937  
-# #  Alcohol  | 77.255 | -3.18 
-# #  CO2      | 110.47 | -2.862
-# #  Tolueno  | 44.947 | -3.445
-# #  NH4      | 102.2  | -2.473
-# #  Acetona  | 34.668 | -3.369
-#   - id: PARA
-#     type: float
-#     restore_value: no
-#     initial_value: '110.47'
-#   - id: PARB
-#     type: float
-#     restore_value: no
-#     initial_value: '-2.862'
-
-# #Parameters to model temperature and humidity dependence
-#   - id: CORA
-#     type: float
-#     restore_value: no
-#     initial_value: '0.00035'
-#   - id: CORB
-#     type: float
-#     restore_value: no
-#     initial_value: '0.02718'
-#   - id: CORC
-#     type: float
-#     restore_value: no
-#     initial_value: '1.39538'
-#   - id: CORD
-#     type: float
-#     restore_value: no
-#     initial_value: '0.0018'
-#   - id: CORE
-#     type: float
-#     restore_value: no
-#     initial_value: '-0.003333333'
-#   - id: CORF
-#     type: float
-#     restore_value: no
-#     initial_value: '-0.001923077'
-#   - id: CORG
-#     type: float
-#     restore_value: no
-#     initial_value: '1.130128205'
-
-# # Here you need to indicate the supply voltage of the MQ135 sensor. It can be measured with a voltmeter. Please note that the rated power will not always be accurate.
-#   - id: volt_resolution
-#     type: float
-#     restore_value: no
-#     initial_value: '4.4'
-
-# # 1 for Exponential, 2 for Linear
-#   - id: regression_method
-#     type: int
-#     restore_value: no
-#     initial_value: '1'
-
-

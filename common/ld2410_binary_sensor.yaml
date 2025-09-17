@@ -1,0 +1,6 @@
+#Occupancy sensor
+binary_sensor:
+  platform: gpio
+  pin: ${LD2410_pin}
+  name: "${friendly_name} LD2410 presence (esphome)"
+  device_class: presence

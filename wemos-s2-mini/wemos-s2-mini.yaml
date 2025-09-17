@@ -1,3 +1,7 @@
+packages:
+  sensors: !include ../common/default_onboard_esp_sensors.yaml
+  binary_sensor: !include ../common/ld2410_binary_sensor.yaml
+
 substitutions:
   esp_board_name: name-and-type-of-the-board
   location: location-of-the-sensor-in-the-house
@@ -60,32 +64,7 @@ captive_portal:
 web_server:
   port: 80
 
-# TODO: Make these sensor namings more generic
-sensor:
-  - platform: template
-    id: sys_esp_temperature
-    name: "${friendly_name} Temperature (esphome)"
-    lambda: return temperatureRead();
-    unit_of_measurement: °C
-    device_class: TEMPERATURE
-    update_interval: 180s
-    entity_category: "diagnostic"
-  - platform: uptime
-    name: "${friendly_name} Node Uptime (esphome)"
-    id: sys_uptime
-    update_interval: 600s
-  - platform: wifi_signal
-    name: "${friendly_name} RSSI (esphome)"
-    id: wifi_signal_db
-    update_interval: 600s
-    entity_category: "diagnostic"
 
-#Occupancy sensor
-binary_sensor:
-  - platform: gpio
-    pin: ${LD2410_pin}
-    name: "${friendly_name} LD2410 presence (esphome)"
-    device_class: presence
 
 time:
   - platform: homeassistant

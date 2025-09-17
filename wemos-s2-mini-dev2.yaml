@@ -4,7 +4,7 @@ substitutions:
   esp_board_name: wemos-s2-mini
   location: studeerkamer
   sensors: "LD2410"
-  static_ip: 192.168.2.133
+  static_ip: 192.168.1.133
   LD2410_pin: "16"
   <<: !include common/standard_naming_substitutions.yaml
 

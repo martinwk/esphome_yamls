@@ -1,0 +1,19 @@
+# sensors that are always available in ESP
+sensor:
+  - platform: template
+    id: sys_esp_temperature
+    name: "${friendly_name} Temperature (esphome)"
+    lambda: return temperatureRead();
+    unit_of_measurement: m
+    device_class: TEMPERATURE
+    update_interval: 180s
+    entity_category: "diagnostic"
+  - platform: uptime
+    name: "${friendly_name} Node Uptime (esphome)"
+    id: sys_uptime
+    update_interval: 600s
+  - platform: wifi_signal
+    name: "${friendly_name} RSSI (esphome)"
+    id: wifi_signal_db
+    update_interval: 600s
+    entity_category: "diagnostic"
