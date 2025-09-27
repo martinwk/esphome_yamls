@@ -1,0 +1,12 @@
+esphome:
+  <<: !include .esphome.yaml
+  # name_add_mac_suffix: True
+  # platformio_options:
+    # board_build.flash_mode: dio
+    # board_build.extra_flags:
+      # - "-DARDUINO_USB_CDC_ON_BOOT=0"
+
+esp32:
+  board: lolin_s2_mini
+  framework:
+    type: arduino

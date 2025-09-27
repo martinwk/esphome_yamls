@@ -1,0 +1,13 @@
+packages:
+  <<:
+    - !include all_devices.yaml
+    - !include ../components/sensors/ld2410_binary_sensor.yaml
+    - !include ../boards/wemos-s2-mini.yaml
+
+substitutions:
+  esp_board_name: name-and-type-of-the-board
+  location: location-of-the-sensor-in-the-house
+  LD2410_pin: "16"
+
+  <<: !include ../substitutions/standard_naming_substitutions.yaml
+

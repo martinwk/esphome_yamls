@@ -1,0 +1,14 @@
+substitutions:
+  esp_board_name: wemos-s2-mini
+  location: studeerkamer
+  sensors: "LD2410"
+  LD2410_pin: "16"
+  <<: !include ../substitutions/standard_naming_substitutions.yaml
+
+packages:
+  <<:
+    - !include common/all_devices.yaml
+    - !include ../components/sensors/ld2410_binary_sensor.yaml
+    - !include ../boards/wemos-s2-mini.yaml
+
+

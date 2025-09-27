@@ -1,0 +1,19 @@
+ssid: !secret wifi_ssid
+password: !secret wifi_password
+fast_connect: True
+
+power_save_mode: NONE
+ap:
+    ssid: ${friendly_name} #${system_name}
+    password: "setup1234"
+  # manual_ip:
+    # Set this to the IP of the ESP. router should not lease IP's above 150
+    # - static ip is not necessary if not using a docker. even then, it should be possibele
+    #   to do without static ip, but you would probably need to configure dokcer (container/network)
+    #   properly
+    # # static_ip: ${static_ip}
+    # # Set this to the IP address of the router. Often ends with .1
+    # gateway: 192.168.1.254
+    # # The subnet of the network. 255.255.255.0 works for most home networks.
+    # subnet: 255.255.255.0
+

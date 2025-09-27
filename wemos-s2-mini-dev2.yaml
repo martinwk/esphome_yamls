@@ -1,13 +1,2 @@
 # TODO: Improve abstraction yamls even further using these schema: https://github.com/jcallaghan/esphome-config
 <<: !include wemos-s2-mini/wemos-s2-mini.yaml
-substitutions:
-  esp_board_name: wemos-s2-mini
-  location: studeerkamer
-  sensors: "LD2410"
-  static_ip: 192.168.1.133
-  LD2410_pin: "16"
-  <<: !include common/standard_naming_substitutions.yaml
-
-api:
-  encryption:
-    key: !secret ha_api_studeerkamer_wemos_s2_mini

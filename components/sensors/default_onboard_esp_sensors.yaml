@@ -4,7 +4,7 @@ sensor:
     id: sys_esp_temperature
     name: "${friendly_name} Temperature (esphome)"
     lambda: return temperatureRead();
-    unit_of_measurement: m
+    unit_of_measurement: "°C"
     device_class: TEMPERATURE
     update_interval: 180s
     entity_category: "diagnostic"

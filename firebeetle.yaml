@@ -1,7 +1,7 @@
 substitutions:
   esp_board_name: firebeetle
   location: woonkamer
-  static_ip: 192.168.2.121
+  static_ip: 192.168.1.121
   LD2410_pin: "GPIO27"
   sensors: "LD2410; Senseair"
 
@@ -32,7 +32,8 @@ api:
   reboot_timeout: 60min
 
 ota:
-  password: "7a490f882db80619566ca73d003579cf"
+  platform: esphome
+  password: !secret ota_password_firebeetle
 
 esp32_ble_tracker:
   scan_parameters:
