@@ -1,2 +1,0 @@
-# TODO: Improve abstraction yamls even further using these schema: https://github.com/jcallaghan/esphome-config
-<<: !include wemos-s2-mini/wemos-s2-mini.yaml

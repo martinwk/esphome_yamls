@@ -1,0 +1,10 @@
+# Mi Thermometer and relative humidity sensor usin BLE
+sensor:
+  - platform: pvvx_mithermometer
+    mac_address: ${mac_address}
+    temperature:
+      name: "Mi Temperature ${device_index}"
+    humidity:
+      name: "Mi Humidity ${device_index}"
+    battery_level:
+      name: "Mi Battery Level ${device_index}"

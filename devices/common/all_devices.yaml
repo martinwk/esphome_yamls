@@ -1,9 +1,0 @@
-<<: !include_dir_named ../../components/common
-<<: !include ../../components/sensors/default_onboard_esp_sensors.yaml
-
-# substitutions:
-#   esp_board_name: name-and-type-of-the-board
-#   location: location-of-the-sensor-in-the-house
-#   LD2410_pin: "16"
-
-#   <<: !include ../substitutions/standard_naming_substitutions.yaml

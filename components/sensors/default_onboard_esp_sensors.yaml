@@ -1,13 +1,8 @@
 # sensors that are always available in ESP
 sensor:
-  - platform: template
+  - platform: internal_temperature
     id: sys_esp_temperature
-    name: "${friendly_name} Temperature (esphome)"
-    lambda: return temperatureRead();
-    unit_of_measurement: "°C"
-    device_class: TEMPERATURE
-    update_interval: 180s
-    entity_category: "diagnostic"
+    name: "${friendly_name} internal temperature (esphome)"
   - platform: uptime
     name: "${friendly_name} Node Uptime (esphome)"
     id: sys_uptime

@@ -7,6 +7,6 @@ esphome:
       # - "-DARDUINO_USB_CDC_ON_BOOT=0"
 
 esp32:
-  board: lolin_s2_mini
+  board: firebeetle32
   framework:
     type: esp-idf

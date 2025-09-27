@@ -1,2 +1,3 @@
 encryption:
     key: !secret ha_api_generic
+# reboot_timeout: 60min

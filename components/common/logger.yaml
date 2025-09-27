@@ -1,1 +1,3 @@
+id: logger_common
+level: warn
 # hardware_uart: uart0

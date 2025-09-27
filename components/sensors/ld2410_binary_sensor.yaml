@@ -1,4 +1,4 @@
-#Occupancy sensor
+#Occupancy sensor, include it in a binary_sensor: block in your main yaml file
 binary_sensor:
   - platform: gpio
     pin: ${LD2410_pin}

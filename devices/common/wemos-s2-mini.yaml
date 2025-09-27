@@ -1,6 +1,8 @@
+# zie in woonkamer-dressoir-firebeetle.yaml voor werkend gebruik van packages
 packages:
   <<:
-    - !include all_devices.yaml
+    - !include_dir_named ../components/common
+    - !include ../components/sensors/default_onboard_esp_sensors.yaml
     - !include ../components/sensors/ld2410_binary_sensor.yaml
     - !include ../boards/wemos-s2-mini.yaml
 

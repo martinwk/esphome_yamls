@@ -1,0 +1,10 @@
+uart:
+  rx_pin: ${rx_pin_senseair}
+  tx_pin: ${tx_pin_senseair}
+  baud_rate: 9600
+
+sensor:
+  - platform: senseair
+    co2:
+      name: "SenseAir CO2 Value"
+    update_interval: 60s
