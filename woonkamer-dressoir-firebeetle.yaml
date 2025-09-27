@@ -5,52 +5,52 @@ substitutions:
   LD2410_pin: "GPIO27"
   rx_pin_senseair: "RX"
   tx_pin_senseair: "TX"
-  <<: !include ../substitutions/standard_naming_substitutions.yaml
+  <<: !include substitutions/standard_naming_substitutions.yaml
 
 packages:
-  common: !include_dir_named ../components/common
-  board: !include ../boards/firebeetle.yaml
-  default_onboard_esp_sensors: !include ../components/sensors/default_onboard_esp_sensors.yaml
-  senseair_s8: !include ../components/sensors/senseair_s8.yaml
-  ld2410_binary_sensor: !include ../components/sensors/ld2410_binary_sensor.yaml
-  ble_tracking: !include ../components/other/ble_tracking.yaml
+  common: !include_dir_named components/common
+  board: !include boards/firebeetle.yaml
+  default_onboard_esp_sensors: !include components/sensors/default_onboard_esp_sensors.yaml
+#   senseair_s8: !include components/sensors/senseair_s8.yaml
+  ld2410_binary_sensor: !include components/sensors/ld2410_binary_sensor.yaml
+  ble_tracking: !include components/other/ble_tracking.yaml
   mi_therm_hum1: !include
-    file: ../components/sensors/mi_therm_hum.yaml
+    file: components/sensors/mi_therm_hum.yaml
     vars:
       mac_address: A4:C1:38:33:B8:6F
       device_index: "1"
   mi_therm_hum2: !include
-    file: ../components/sensors/mi_therm_hum.yaml
+    file: components/sensors/mi_therm_hum.yaml
     vars:
       mac_address: A4:C1:38:35:9A:CA
       device_index: "2"
   mi_therm_hum3: !include
-    file: ../components/sensors/mi_therm_hum.yaml
+    file: components/sensors/mi_therm_hum.yaml
     vars:
       mac_address: A4:C1:38:38:57:36
       device_index: "3"
   mi_therm_hum4: !include
-    file: ../components/sensors/mi_therm_hum.yaml
+    file: components/sensors/mi_therm_hum.yaml
     vars:
       mac_address: A4:C1:38:0E:09:4D
       device_index: "4"
   mi_therm_hum5: !include
-    file: ../components/sensors/mi_therm_hum.yaml
+    file: components/sensors/mi_therm_hum.yaml
     vars:
       mac_address: A4:C1:38:0B:17:B9
       device_index: "5"
   mi_therm_hum6: !include
-    file: ../components/sensors/mi_therm_hum.yaml
+    file: components/sensors/mi_therm_hum.yaml
     vars:
       mac_address: A4:C1:38:FD:3C:03
       device_index: "6"
   mi_therm_hum7: !include
-    file: ../components/sensors/mi_therm_hum.yaml
+    file: components/sensors/mi_therm_hum.yaml
     vars:
       mac_address: A4:C1:38:9B:DB:F6
       device_index: "7"
   mi_therm_hum8: !include
-    file: ../components/sensors/mi_therm_hum.yaml
+    file: components/sensors/mi_therm_hum.yaml
     vars:
       mac_address: A4:C1:38:72:BD:D5
       device_index: "8"
@@ -72,5 +72,7 @@ time:
              - switch.toggle: restart_switch
 
 logger:
-  - id: !extend logger_common
-    baud_rate: 0  # no logging to uart, want uart is used by CO2
+    # - id: !extend logger_common
+    baud_rate: 0
+    level: debug
+    # hardware_uart: uart0
