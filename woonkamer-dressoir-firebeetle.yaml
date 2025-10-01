@@ -11,7 +11,7 @@ packages:
   common: !include_dir_named components/common
   board: !include boards/firebeetle.yaml
   default_onboard_esp_sensors: !include components/sensors/default_onboard_esp_sensors.yaml
-#   senseair_s8: !include components/sensors/senseair_s8.yaml
+  senseair_s8: !include components/sensors/senseair_s8.yaml
   ld2410_binary_sensor: !include components/sensors/ld2410_binary_sensor.yaml
   ble_tracking: !include components/other/ble_tracking.yaml
   mi_therm_hum1: !include
