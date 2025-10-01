@@ -74,5 +74,5 @@ time:
 logger:
     # - id: !extend logger_common
     baud_rate: 0
-    level: debug
+    # level: debug
     # hardware_uart: uart0
